@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Poema Código con Tiempo y Borrado Elegante</title>
+<style>
+  body {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: monospace;
+    font-size: 18px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+  }
+
+  #container {
+    width: 90%;
+    max-width: 900px;
+    height: 95vh;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  #poema::after {
+    content: '|';
+    animation: blink 1s infinite;
+    color: #cccccc;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  body {
+  background: #ffffff; /* Negro profundo */
+  color: #171414; /* Texto base */
+  font-family: monospace;
+}
+
+.comment { color: #414042; }       /* Gris para comentarios */
+.keyword { color: #b62025; }       /* Vinotinto oscuro para keywords */
+.string { color: #A52A2A; }        /* Rojo cálido para strings */
+.variable { color: #171414; }      /* Blanco para variables */
+.number { color: #7B1E1E; }        /* Rojo oscuro para números */
+</style>
+</head>
+<body>
+<div id="container">
+  <code id="poema"></code>
+</div>
+
+<script>
+const bloques = [
+  {
+    comentario: `// anuncio\n// renuncia consciente\n// que no nos queda más\n`,
+    codigo: `function renunciar(arr) {
+    arr.forEach(creencia => {
+        console.log("// dejando ir " + creencia);
+    });
+    return [];
+}\n`
+  },
+  {
+    comentario: `// a los cuerpos que nos creímos la canción\n// la novela\n// la película\n`,
+    codigo: `let cuerpos = ["la canción", "la novela", "la película"];
+cuerpos = renunciar(cuerpos);\n`
+  },
+  {
+    comentario: `// que el amor ya no nos salve\n// que ya no nos mueva\n// es más\n// que nos olvide\n`,
+    codigo: `let amor_salva = false;
+let amor_mueve = false;
+amor = null;\n`
+  },
+  {
+    comentario: `// se ha perdido ya demasiado\n// por no saber medir\n// y si no se mide\n// entonces que no exista\n`,
+    codigo: `if (!medida) amor = undefined;
+delete amor;\n`
+  },
+  {
+    comentario: `// que quede relegado junto a la ecuación\n// que estimaba el movimiento curvilíneo uniforme\n`,
+    codigo: `const ecuacion = "movimiento curvilíneo uniforme";\n`
+  },
+  {
+    comentario: `// que habite\n// pero que no joda\n// que deje descansar\n// y dormir sin sueños\n`,
+    codigo: `amor?.modo = "silencioso";
+dreams.clear();\n`
+  },
+  {
+    comentario: `// que no alebreste noches que debieron ser tranquilas\n// que no produzca insomnio\n// que deje respirar\n// o que se vaya\n`,
+    codigo: `if (noche.estado === "tranquila") amor?.stayQuiet();
+amor = "opt-out";\n`
+  },
+  {
+    comentario: `// que se pierda toda esperanza\n`,
+    codigo: `esperanza = null;\n`
+  },
+  {
+    comentario: `// que se llenen esos espacios con ideas\n// que nazcan desde mi útero\n`,
+    codigo: `ideas.push("desde_utero");\n`
+  },
+  {
+    comentario: `// que no quiero\n// que ya basta\n// que no\n`,
+    codigo: `return;\n`
+  }
+];
+
+const poema = document.getElementById('poema');
+const container = document.getElementById('container');
+
+function syntaxHighlightTokens(text) {
+  const tokens = [];
+  const regex = /(\/\/.*|\b(function|return|if|let|const|delete|forEach)\b|("[^"]*"|'[^']*')|\b\d+\b|\b(console|arr|creencia|amor|cuerpos|medida|noche|ideas|esperanza)\b|\s+|[^\s]+)/g;
+  let match;
+  while ((match = regex.exec(text))) {
+    if (match[1]?.startsWith("//")) {
+      tokens.push(`<span class="comment">${match[1]}</span>`);
+    } else if (match[2]) {
+      tokens.push(`<span class="keyword">${match[2]}</span>`);
+    } else if (match[3]) {
+      tokens.push(`<span class="string">${match[3]}</span>`);
+    } else if (match[4]) {
+      tokens.push(`<span class="variable">${match[4]}</span>`);
+    } else if (/\s+/.test(match[0])) {
+      tokens.push(match[0]); // espacio
+    } else {
+      tokens.push(match[0]); // texto normal
+    }
+  }
+  return tokens;
+}
+
+let bloqueIndex = 0;
+let allCodeTokens = []; // Guardamos el código para borrado final
+
+function escribirTokens(tokens, callback) {
+  let i = 0;
+  function animar() {
+    if (i < tokens.length) {
+      poema.innerHTML += tokens[i];
+      container.scrollTop = container.scrollHeight;
+      i++;
+      setTimeout(animar, 50);
+    } else {
+      callback && callback();
+    }
+  }
+  animar();
+}
+
+function borrarTokens(tokens, callback) {
+  let i = tokens.length;
+  function borrar() {
+    if (i > 0) {
+      poema.innerHTML = poema.innerHTML.slice(0, poema.innerHTML.lastIndexOf(tokens[i - 1]));
+      i--;
+      setTimeout(borrar, 20);
+    } else {
+      callback && callback();
+    }
+  }
+  borrar();
+}
+
+function borrarTodoAnimado(tokens, callback) {
+  let i = tokens.length;
+  function borrar() {
+    if (i > 0) {
+      poema.innerHTML = poema.innerHTML.slice(0, poema.innerHTML.lastIndexOf(tokens[i - 1]));
+      i--;
+      setTimeout(borrar, 15);
+    } else {
+      callback && callback();
+    }
+  }
+  borrar();
+}
+
+function mostrar() {
+  if (bloqueIndex < bloques.length) {
+    const { comentario, codigo } = bloques[bloqueIndex];
+
+    const comentarioTokens = syntaxHighlightTokens(comentario);
+    const codigoTokens = syntaxHighlightTokens(codigo);
+
+    escribirTokens(comentarioTokens, () => {
+      setTimeout(() => {
+        borrarTokens(comentarioTokens, () => {
+          escribirTokens(codigoTokens, () => {
+            allCodeTokens = allCodeTokens.concat(codigoTokens);
+            bloqueIndex++;
+            setTimeout(mostrar, 2000);
+          });
+        });
+      }, 3000); // Pausa poética
+    });
+  } else {
+    setTimeout(() => {
+      borrarTodoAnimado(allCodeTokens, () => {
+        bloqueIndex = 0;
+        allCodeTokens = [];
+        mostrar();
+      });
+    }, 4000);
+  }
+}
+
+mostrar();
+</script>
+</body>
+</html>
